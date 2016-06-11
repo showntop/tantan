@@ -2,7 +2,7 @@ package schema
 
 import (
 	"log"
-	"os"
+	// "os"
 	"strconv"
 
 	// "github.com/jmoiron/sqlx"
@@ -72,7 +72,7 @@ func InitDb(config map[string]string) {
 		// Whether to use secure TCP/IP connections (TLS).
 		SSL: sslmode,
 	})
-	pg.SetQueryLogger(log.New(os.Stdout, "", log.LstdFlags))
+	// pg.SetQueryLogger(log.New(os.Stdout, "", log.LstdFlags))
 	createSchema(db)
 	err = db.Close()
 	if err != nil {
