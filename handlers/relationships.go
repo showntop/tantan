@@ -35,7 +35,12 @@ func UpdateRelationshipsHandler(rw http.ResponseWriter, req *http.Request) {
 	relatorId, _ := strconv.Atoi(vars["other_user_id"])
 	state := req.FormValue("state")
 	relationship := models.Relationship{ActorId: actorId, RelatorId: relatorId, State: state}
-	err := store.Relationship.Update(&relationship)
+	err := relationship.Validate()
+	if err != nil {
+		rw.Write([]byte(err.Error()))
+		return
+	}
+	err = store.Relationship.Update(&relationship)
 	if err != nil {
 		log.Println(err)
 		rw.Write([]byte("db error"))

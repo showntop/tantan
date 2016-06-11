@@ -1,9 +1,14 @@
 package models
 
+import (
+	"errors"
+	"strings"
+)
+
 const (
-	Like    string = "like"
-	Dislike string = "dislike"
-	Mathed  string = "matched"
+	Like    string = "liked"
+	Dislike string = "disliked"
+	Match   string = "matched"
 )
 
 type Relationship struct {
@@ -11,6 +16,13 @@ type Relationship struct {
 	ActorId   int    `json:"-"`
 	RelatorId int    `json:"user_id"`
 	State     string `json:"state"`
+}
+
+func (r *Relationship) Validate() error {
+	if strings.Compare(Like, r.State) != 0 && strings.Compare(Dislike, r.State) != 0 {
+		return errors.New("not allowed state")
+	}
+	return nil
 }
 
 //new the relator's relationship

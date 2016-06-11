@@ -11,7 +11,7 @@ type RelationshipStore struct {
 //find a actor's relationship
 func (r *RelationshipStore) FindAllByActorId(actorId int) ([]models.Relationship, error) {
 
-	var relationships []models.Relationship
+	relationships := []models.Relationship{}
 	err := r.Master.Model(&relationships).
 		Where("actor_id = ?", actorId).
 		Select()
@@ -30,21 +30,21 @@ func (r *RelationshipStore) FillByActorAndRelator(relatonship *models.Relationsh
 	return err
 }
 
+//update or create a user's relation to others
 func (r *RelationshipStore) Update(actorRelationship *models.Relationship) error {
-	//
+	//get the relator's ship
 	relatorRelationship := actorRelationship.Reverse()
 	err := r.FillByActorAndRelator(relatorRelationship)
 	if err != nil {
 		return err
 	}
 	//get the right state
-	if relatorRelationship.State == "like" && actorRelationship.State == "like" {
-		actorRelationship.State = "matched"
-		relatorRelationship.State = "matched" //and update the relator
+	if (relatorRelationship.State == models.Like || relatorRelationship.State == models.Match) && actorRelationship.State == models.Like {
+		actorRelationship.State = models.Match
+		relatorRelationship.State = models.Match //and update the relator
 	}
-
-	if relatorRelationship.State == "matched" && actorRelationship.State == "dislike" {
-		relatorRelationship.State = "like" //and update the relator
+	if relatorRelationship.State == models.Match && actorRelationship.State == models.Dislike {
+		relatorRelationship.State = models.Like //and update the relator
 	}
 
 	//update they then

@@ -4,6 +4,7 @@ import (
 	// "fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"gopkg.in/pg.v4"
 )
@@ -15,9 +16,9 @@ type Store struct {
 	Relationship *RelationshipStore
 }
 
-func NewStore() *Store {
+func NewStore(config map[string]string) *Store {
 	store := &Store{}
-	store.Master = setupDB()
+	store.Master = setupDB(config)
 
 	store.User = &UserStore{store}
 	store.Relationship = &RelationshipStore{store}
@@ -25,14 +26,20 @@ func NewStore() *Store {
 	return store
 }
 
-func setupDB() *pg.DB {
+func setupDB(config map[string]string) *pg.DB {
+
+	sslmode, err := strconv.ParseBool(config["sslmode"])
+	if err == nil {
+		log.Println("It's not ok for type sslmode")
+	}
+
 	db := pg.Connect(&pg.Options{
-		Addr:     "localhost:5432",
-		User:     "showntop",
-		Password: "1",
-		Database: "tantan2",
+		Addr:     config["addr"],
+		User:     config["user"],
+		Password: config["password"],
+		Database: config["dbname"],
 		// Whether to use secure TCP/IP connections (TLS).
-		SSL: false,
+		SSL: sslmode,
 	})
 	pg.SetQueryLogger(log.New(os.Stdout, "", log.LstdFlags))
 	return db

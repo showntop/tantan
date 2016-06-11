@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	// "github.com/jmoiron/sqlx"
 	// _ "github.com/lib/pq"
@@ -11,16 +11,23 @@ import (
 )
 
 var queries = []string{
-	`CREATE TABLE users
+
+	`DO $$
+             BEGIN
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'relationship_states') THEN
+                    CREATE TYPE relationship_states AS ENUM ('liked', 'disliked','matched');
+                END IF;
+             END
+             $$;`,
+
+	`CREATE TABLE IF NOT EXISTS users
             (
               id serial NOT NULL,
               name character varying,
               CONSTRAINT users_pkey PRIMARY KEY (id)
             );`,
 
-	`CREATE TYPE relationship_states AS ENUM ('like', 'dislike','matched');`,
-
-	`CREATE TABLE relationships
+	`CREATE TABLE IF NOT EXISTS relationships
             (
               id serial NOT NULL,
               actor_id serial NOT NULL,
@@ -41,25 +48,30 @@ func createSchema(db *pg.DB) error {
 	for _, q := range queries {
 		_, err := db.Exec(q)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return err
 		}
 	}
 	return nil
 }
 
-func main() {
+func InitDb(config map[string]string) {
+	sslmode, err := strconv.ParseBool(config["sslmode"])
+	if err == nil {
+		log.Println("It's not ok for type sslmode")
+	}
+
 	db := pg.Connect(&pg.Options{
-		Addr:     "localhost:5432",
-		User:     "showntop",
-		Password: "1",
-		Database: "tantan2",
+		Addr:     config["addr"],
+		User:     config["user"],
+		Password: config["password"],
+		Database: config["dbname"],
 		// Whether to use secure TCP/IP connections (TLS).
-		SSL: false,
+		SSL: sslmode,
 	})
 	pg.SetQueryLogger(log.New(os.Stdout, "", log.LstdFlags))
 	createSchema(db)
-	err := db.Close()
+	err = db.Close()
 	if err != nil {
 		panic(err)
 	}
