@@ -8,6 +8,6 @@ import (
 var _ = fmt.Println
 
 type User struct {
-	Id   int    `db:"id"`
-	Name string `db:"name"`
+	Id   int    `json:"user_id"`
+	Name string `json:"name"`
 }

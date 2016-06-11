@@ -21,13 +21,13 @@ func (u *UserStore) Save(user *models.User) error {
 	return nil
 }
 
-func (u *UserStore) FindAll() (*[]models.User, error) {
-	var users []models.User
+func (u *UserStore) FindAll() ([]models.User, error) {
+	users := []models.User{}
 
 	err := u.Master.Model(&users).Select()
 
 	if err != nil {
-		return &users, err
+		return users, err
 	}
-	return &users, nil
+	return users, nil
 }
