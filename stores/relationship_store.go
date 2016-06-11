@@ -8,6 +8,16 @@ type RelationshipStore struct {
 	*Store
 }
 
+//find a actor's relationship
+func (r *RelationshipStore) FindAllByActorId(actorId int) ([]models.Relationship, error) {
+
+	var relationships []models.Relationship
+	err := r.Master.Model(&relationships).
+		Where("actor_id = ?", actorId).
+		Select()
+	return relationships, err
+}
+
 //find the record by actor and relator's id
 func (r *RelationshipStore) FillByActorAndRelator(relatonship *models.Relationship) error {
 	//relator's relationship

@@ -12,8 +12,20 @@ import (
 
 func ListRelationshipsHandler(rw http.ResponseWriter, req *http.Request) {
 	log.Println("list a user's all relationships")
+	vars := mux.Vars(req)
+	actorId, _ := strconv.Atoi(vars["user_id"])
+	relationships, err := store.Relationship.FindAllByActorId(actorId)
+	if err != nil {
+		log.Panic(err)
+		rw.Write([]byte("db error"))
+		return
+	}
 
-	rw.Write([]byte("list a user's all relationships"))
+	output, err := json.Marshal(relationships)
+	if err != nil {
+		log.Fatal(err)
+	}
+	rw.Write([]byte(output))
 }
 
 func UpdateRelationshipsHandler(rw http.ResponseWriter, req *http.Request) {

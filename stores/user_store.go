@@ -1,8 +1,6 @@
 package stores
 
 import (
-	"fmt"
-
 	"github.com/showntop/tantan/models"
 )
 
@@ -13,21 +11,12 @@ type UserStore struct {
 func (u *UserStore) Save(user *models.User) error {
 
 	err := u.Master.Create(user)
-
-	if err != nil {
-		fmt.Println("save :", err.Error())
-		return err
-	}
-	return nil
+	return err
 }
 
 func (u *UserStore) FindAll() ([]models.User, error) {
+
 	users := []models.User{}
-
 	err := u.Master.Model(&users).Select()
-
-	if err != nil {
-		return users, err
-	}
-	return users, nil
+	return users, err
 }
