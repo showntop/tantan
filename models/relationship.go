@@ -7,9 +7,9 @@ const (
 )
 
 type Relationship struct {
-	Id        int    `json:"myName,omitempty"`
-	ActorId   int    `json:"myName,omitempty"`
-	RelatorId int    `json:"id"`
+	Id        int    `json:"-"`
+	ActorId   int    `json:"-"`
+	RelatorId int    `json:"user_id"`
 	State     string `json:"state"`
 }
 

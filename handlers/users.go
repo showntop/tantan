@@ -2,40 +2,41 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/showntop/tantan/models"
 )
 
 func ListUsersHandler(rw http.ResponseWriter, req *http.Request) {
-	fmt.Println("list all users")
+	log.Println("list all users")
 	users, err := store.User.FindAll()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		rw.Write([]byte("db error"))
 		return
 	}
-	a, _ := json.Marshal(users)
-	rw.Write([]byte(a))
+	output, _ := json.Marshal(users)
+	rw.Write([]byte(output))
 }
 
 func CreateUsersHandler(rw http.ResponseWriter, req *http.Request) {
-	fmt.Println("create a user")
+	log.Println("create a user")
 
 	name := req.FormValue("name")
 
 	user := &models.User{Name: name}
-	fmt.Println(store)
-	fmt.Println(store.User)
 	err := store.User.Save(user)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		rw.Write([]byte("db error"))
 		return
 	}
-
-	rw.Write([]byte("create a user"))
+	output, err := json.Marshal(user)
+	if err != nil {
+		log.Fatal(err)
+	}
+	rw.Write([]byte(output))
 }
 
 func ShowUsersHandler(rw http.ResponseWriter, req *http.Request) {

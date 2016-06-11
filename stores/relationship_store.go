@@ -14,7 +14,7 @@ func (r *RelationshipStore) FillByActorAndRelator(relatonship *models.Relationsh
 	err := r.Master.Model(relatonship).
 		Where("actor_id = ? and relator_id = ?", relatonship.ActorId, relatonship.RelatorId).
 		Select()
-	if err.Error() == "pg: no rows in result set" {
+	if err != nil && err.Error() == "pg: no rows in result set" {
 		return nil
 	}
 	return err
@@ -29,11 +29,11 @@ func (r *RelationshipStore) Update(actorRelationship *models.Relationship) error
 	}
 	//get the right state
 	if relatorRelationship.State == "like" && actorRelationship.State == "like" {
-		actorRelationship.State = "mathed"
-		relatorRelationship.State = "mathed" //and update the relator
+		actorRelationship.State = "matched"
+		relatorRelationship.State = "matched" //and update the relator
 	}
 
-	if relatorRelationship.State == "mathed" && actorRelationship.State == "dislike" {
+	if relatorRelationship.State == "matched" && actorRelationship.State == "dislike" {
 		relatorRelationship.State = "like" //and update the relator
 	}
 
