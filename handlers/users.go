@@ -23,15 +23,29 @@ func ListUsersHandler(rw http.ResponseWriter, req *http.Request) {
 func CreateUsersHandler(rw http.ResponseWriter, req *http.Request) {
 	log.Println("create a user")
 
-	name := req.FormValue("name")
+	//request do
+	user := &models.User{}
+	decoder := json.NewDecoder(req.Body)
+	err := decoder.Decode(&user)
+	if err != nil {
+		rw.Write([]byte("parse req body err"))
+		log.Println(err)
+		return
+	}
+	//only allowed name field
+	//did has the better way or separate into reqmodel  sqlmodel  repmodel
+	user.Id = 0
+	user.Type = "user"
 
-	user := &models.User{Name: name, Type: "user"}
-	err := store.User.Save(user)
+	//save
+	err = store.User.Save(user)
 	if err != nil {
 		log.Println(err)
 		rw.Write([]byte("db error"))
 		return
 	}
+
+	//respose do
 	output, err := json.Marshal(user)
 	if err != nil {
 		log.Fatal(err)
