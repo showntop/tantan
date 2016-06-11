@@ -19,6 +19,9 @@ git 2.7.2
     cp {tantan} -rf $GOPATH/src/github.com/showntop/
     cd $GOPATH/src/github.com/showntop/tantan
     go get
+
+    OR
+
 2. use go get install
     go get github.com/showntop/tantan
     cd $GOPATH/src/github.com/showntop/tantan

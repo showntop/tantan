@@ -7,7 +7,7 @@ var (
 	Configure = map[string]interface{}{
 		"port": "10000",
 		"database": map[string]string{
-			"addr":     "localhost:9000",
+			"addr":     "localhost:5432",
 			"user":     "showntop",
 			"password": "1",
 			"dbname":   "tantan",
