@@ -1,4 +1,4 @@
-package main
+package schema
 
 import (
 	"log"
@@ -10,6 +10,7 @@ import (
 	"gopkg.in/pg.v4"
 )
 
+//need to split it to a single file
 var queries = []string{
 
 	`DO $$
@@ -24,6 +25,7 @@ var queries = []string{
             (
               id serial NOT NULL,
               name character varying,
+              type character varying DEFAULT 'user',
               CONSTRAINT users_pkey PRIMARY KEY (id)
             );`,
 
@@ -33,14 +35,15 @@ var queries = []string{
               actor_id serial NOT NULL,
               relator_id serial NOT NULL,
               state relationship_states,
+              type character varying DEFAULT 'relationship',
               UNIQUE (actor_id, relator_id),
               CONSTRAINT relationships_pkey PRIMARY KEY (id),
               CONSTRAINT relationships_fkey FOREIGN KEY (actor_id)
                   REFERENCES users (id) MATCH SIMPLE
-                  ON UPDATE NO ACTION ON DELETE CASCADE,
+                  ON UPDATE RESTRICT ON DELETE CASCADE,
               CONSTRAINT relationships_fkey2 FOREIGN KEY (relator_id)
                   REFERENCES users (id) MATCH SIMPLE
-                  ON UPDATE NO ACTION ON DELETE CASCADE
+                  ON UPDATE RESTRICT ON DELETE CASCADE
             );`,
 }
 

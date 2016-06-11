@@ -12,10 +12,11 @@ const (
 )
 
 type Relationship struct {
-	Id        int    `json:"-"`
+	Id        int    `json:"-" sql:",pk"`
 	ActorId   int    `json:"-"`
-	RelatorId int    `json:"user_id"`
+	RelatorId int    `json:"user_id,string"`
 	State     string `json:"state"`
+	Type      string `json:"type"`
 }
 
 func (r *Relationship) Validate() error {
@@ -30,6 +31,7 @@ func (r *Relationship) Reverse() *Relationship {
 	return &Relationship{
 		ActorId:   r.RelatorId,
 		RelatorId: r.ActorId,
+		Type:      "relationship",
 	}
 
 }

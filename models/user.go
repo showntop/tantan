@@ -2,12 +2,12 @@ package models
 
 import (
 	"fmt"
-	// "github.com/showntop/tantan/server"
 )
 
 var _ = fmt.Println
 
 type User struct {
-	Id   int    `json:"user_id"`
+	Id   int    `json:"user_id,string" sql:",pk"`
 	Name string `json:"name"`
+	Type string `json:"type"`
 }

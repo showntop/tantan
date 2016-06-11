@@ -1,4 +1,4 @@
-package main
+package config
 
 //the server and db's configure
 //can save in the file when start load it

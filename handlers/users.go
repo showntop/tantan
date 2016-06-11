@@ -25,7 +25,7 @@ func CreateUsersHandler(rw http.ResponseWriter, req *http.Request) {
 
 	name := req.FormValue("name")
 
-	user := &models.User{Name: name}
+	user := &models.User{Name: name, Type: "user"}
 	err := store.User.Save(user)
 	if err != nil {
 		log.Println(err)

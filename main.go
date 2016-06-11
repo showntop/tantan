@@ -1,16 +1,15 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
+	. "github.com/showntop/tantan/config"
 	"github.com/showntop/tantan/handlers"
-	// "github.com/showntop/tantan/server"
-	// _ "github.com/showntop/tantan/models"
-	// "github.com/showntop/tantan/stores"
+	"github.com/showntop/tantan/schema"
 )
 
 func main() {
-	fmt.Println(".....................................start server.......................................")
-	InitDb(Configure["database"].(map[string]string))
+	log.Println("start server")
+	schema.InitDb(Configure["database"].(map[string]string))
 	handlers.Setup(Configure)
 }

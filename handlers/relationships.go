@@ -16,14 +16,14 @@ func ListRelationshipsHandler(rw http.ResponseWriter, req *http.Request) {
 	actorId, _ := strconv.Atoi(vars["user_id"])
 	relationships, err := store.Relationship.FindAllByActorId(actorId)
 	if err != nil {
-		log.Panic(err)
+		log.Panicln(err)
 		rw.Write([]byte("db error"))
 		return
 	}
 
 	output, err := json.Marshal(relationships)
 	if err != nil {
-		log.Fatal(err)
+		log.Panicln(err)
 	}
 	rw.Write([]byte(output))
 }
@@ -33,8 +33,12 @@ func UpdateRelationshipsHandler(rw http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	actorId, _ := strconv.Atoi(vars["user_id"])
 	relatorId, _ := strconv.Atoi(vars["other_user_id"])
+	if actorId == relatorId {
+		rw.Write([]byte("there is no need to do this"))
+		return
+	}
 	state := req.FormValue("state")
-	relationship := models.Relationship{ActorId: actorId, RelatorId: relatorId, State: state}
+	relationship := models.Relationship{ActorId: actorId, RelatorId: relatorId, State: state, Type: "relationship"}
 	err := relationship.Validate()
 	if err != nil {
 		rw.Write([]byte(err.Error()))
